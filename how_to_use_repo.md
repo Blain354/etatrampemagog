@@ -4,6 +4,31 @@ This repository is a production-ready boilerplate for modern fullstack applicati
 
 ---
 
+## ⚡ Quickstart
+
+
+Ouvre deux terminaux et copie-colle les commandes suivantes :
+
+### Frontend
+```sh
+cd frontend
+npm install # (seulement la première fois)
+npm run dev
+# Accès : http://localhost:5173
+```
+
+### Backend
+```sh
+cd backend
+# (Optionnel) python -m venv .venv && .\.venv\Scripts\activate
+pip install -r requirements.txt
+python app.py
+# Accès : http://localhost:5000/api/health
+```
+
+---
+
+
 ## 🏗️ System Architecture
 
 * **Frontend:** React 19 + TypeScript + **React Compiler**. Served by a high-performance **Nginx** server.
