@@ -1,0 +1,21 @@
+---
+description: Load deployment context only for infra files.
+globs:
+  - "docker-compose.yml"
+  - ".env"
+  - "frontend/Dockerfile"
+  - "backend/Dockerfile"
+---
+
+# Deployment Context Rule
+
+Use these references only when the task touches infrastructure/deployment:
+
+- `AI skills/deployment-architecture.md`
+- `AI skills/deployment-modes.md`
+- `AI skills/security-modes.md`
+
+## Expected checks
+
+- Keep Traefik labels consistent.
+- Validate deployment mode (`deploy_mode=secure|public`) based on the request.

@@ -1,0 +1,19 @@
+---
+description: Load API context only when backend/frontend API is involved.
+globs:
+  - "backend/**/*.py"
+  - "frontend/src/**/*"
+---
+
+# API Context Rule
+
+Use these references when the task touches endpoints or API calls:
+
+- `AI skills/api-endpoints.md`
+- `AI skills/project-context.md`
+
+## Expected checks
+
+- Keep routes under `/api/...`.
+- Keep JSON responses consistent with appropriate HTTP status codes.
+- Use the correct API URL by environment (local vs public).

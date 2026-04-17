@@ -1,0 +1,29 @@
+---
+description: Minimal global rule to prevent context rot.
+globs:
+  - "**/*"
+---
+
+# Minimal Global Rule
+
+Keep this rule intentionally short to prevent context rot.
+Do not auto-load all skills/docs.
+Load context only when it is required for the current task.
+
+## Loading principle
+
+- Use specialized rules in `.cursor/rules/*` based on touched files.
+- Reference `AI skills/*` on demand, never by default.
+- Prioritize the closest domain docs (API, deployment, security, workflow).
+
+## Baseline
+
+- Respect the target stack: React 19 + Vite + TypeScript, Flask/Python backend, Docker Compose, Traefik.
+- Keep backend CORS enabled.
+- Do not modify SSL/Traefik behavior without explicit user request.
+
+## Documentation and language policy
+
+- Always update documentation when behavior, contracts, architecture, deployment, or security mode changes.
+- Keep documentation concise and scoped to the actual change.
+- Write all new rules and project documentation in English.
