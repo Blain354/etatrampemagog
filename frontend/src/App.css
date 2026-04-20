@@ -947,6 +947,14 @@ textarea.field {
   animation: modal-panel-enter 400ms cubic-bezier(0.2, 0.85, 0.35, 1) both;
 }
 
+.modal-backdrop.is-closing {
+  animation: modal-backdrop-exit 320ms cubic-bezier(0.32, 0.08, 0.24, 1) forwards;
+}
+
+.modal.is-closing {
+  animation: modal-panel-exit 300ms cubic-bezier(0.32, 0.08, 0.24, 1) both;
+}
+
 @keyframes modal-backdrop-enter {
   from {
     background: color-mix(in srgb, #020617 0%, transparent);
@@ -970,6 +978,32 @@ textarea.field {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modal-backdrop-exit {
+  from {
+    background: color-mix(in srgb, #020617 42%, transparent);
+    backdrop-filter: blur(var(--modal-backdrop-blur)) saturate(1.1);
+    -webkit-backdrop-filter: blur(var(--modal-backdrop-blur)) saturate(1.1);
+  }
+
+  to {
+    background: color-mix(in srgb, #020617 0%, transparent);
+    backdrop-filter: blur(0) saturate(1);
+    -webkit-backdrop-filter: blur(0) saturate(1);
+  }
+}
+
+@keyframes modal-panel-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
   }
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { SteelSelect, type SteelSelectOption } from './SteelSelect'
 
@@ -58,9 +58,11 @@ function App() {
   const [activeTab, setActiveTab] =
     useState<(typeof tabs)[number]>('overview')
   const [showModal, setShowModal] = useState(false)
+  const [isModalClosing, setIsModalClosing] = useState(false)
   const [formError, setFormError] = useState(false)
   const [pillToggle, setPillToggle] = useState(false)
   const [projectType, setProjectType] = useState('saas')
+  const modalCloseTimeoutRef = useRef<number | null>(null)
 
   const projectTypeOptions: SteelSelectOption[] = [
     { value: 'saas', label: 'SaaS app' },
@@ -70,6 +72,37 @@ function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
+
+  useEffect(() => {
+    return () => {
+      if (modalCloseTimeoutRef.current !== null) {
+        window.clearTimeout(modalCloseTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  const openModal = () => {
+    if (modalCloseTimeoutRef.current !== null) {
+      window.clearTimeout(modalCloseTimeoutRef.current)
+      modalCloseTimeoutRef.current = null
+    }
+    setIsModalClosing(false)
+    setShowModal(true)
+  }
+
+  const closeModal = () => {
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const closeDelay = prefersReducedMotion ? 0 : 420
+
+    setIsModalClosing(true)
+    modalCloseTimeoutRef.current = window.setTimeout(() => {
+      setShowModal(false)
+      setIsModalClosing(false)
+      modalCloseTimeoutRef.current = null
+    }, closeDelay)
+  }
 
   const activeTabIndex = tabs.indexOf(activeTab)
 
@@ -392,15 +425,18 @@ function App() {
           </div>
           <div className="skeleton" aria-hidden="true"></div>
           <div className="button-row compact">
-            <button type="button" className="btn btn-secondary" onClick={() => setShowModal(true)}>
+            <button type="button" className="btn btn-secondary" onClick={openModal}>
               Open modal preview
             </button>
           </div>
         </section>
 
         {showModal && (
-          <section className="modal-backdrop" aria-label="Modal preview">
-            <div className="modal">
+          <section
+            className={`modal-backdrop ${isModalClosing ? 'is-closing' : ''}`}
+            aria-label="Modal preview"
+          >
+            <div className={`modal ${isModalClosing ? 'is-closing' : ''}`}>
               <h3>Modal Component</h3>
               <p className="subtitle">
                 This is a showcase modal for spacing, border, and elevation behavior.
@@ -412,7 +448,7 @@ function App() {
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  onClick={() => setShowModal(false)}
+                  onClick={closeModal}
                 >
                   Close
                 </button>
