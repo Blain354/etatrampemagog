@@ -1,0 +1,20 @@
+---
+description: Load database context when backend models or data migrations are involved.
+globs:
+  - "backend/models/**/*.py"
+  - "backend/database.py"
+  - "backend/alembic/**/*"
+---
+
+# Database Context Rule
+
+Use these references when modifying models or executing alembic migrations:
+
+- `AI skills/fastapi-database-management.md`
+- `AI skills/project-context.md`
+
+## Expected checks
+
+- Never add a password or native authentication logic to user schemas (handled by Traefik).
+- Generate and review an Alembic auto-migration after altering `SQLModel` code.
+- Depend on SQLite `/app/data/database.db` via `backend/database.py`.

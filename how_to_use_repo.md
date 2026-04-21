@@ -1,6 +1,6 @@
-# 🚀 Fullstack Hybrid Template: React 19 (Compiler) + Python Flask
+# 🚀 Fullstack Hybrid Template: React 19 (Compiler) + FastAPI
 
-This repository is a production-ready boilerplate for modern fullstack applications. It bridges the performance of **React 19** with the flexibility of **Python**, all orchestrated by **Docker** and **Traefik**.
+This repository is a production-ready boilerplate for modern fullstack applications. It bridges the performance of **React 19** with the flexibility and typesafety of **FastAPI** (Python), all orchestrated by **Docker** and **Traefik**.
 
 ---
 
@@ -27,8 +27,8 @@ python -m venv .venv
 .\.venv\Scripts\activate
 
 pip install -r requirements.txt
-python app.py
-# Access: http://localhost:5000/api/health
+uvicorn main:app --reload
+# Access: http://localhost:8000/api/health (or 5000 if hardcoded)
 ```
 
 ---
@@ -36,7 +36,8 @@ python app.py
 ## 🏗️ System Architecture
 
 - **Frontend:** React 19 + TypeScript + **React Compiler**. Served by a high-performance **Nginx** server.
-- **Backend:** Python 3.9 + Flask. Managed by **Gunicorn** for production-grade concurrency.
+- **Backend:** Python 3.9+ + FastAPI. Managed by **Uvicorn** for production-grade async performance.
+- **Database:** SQLite persisted on a Docker Volume path (`/app/data`), using **SQLModel** and **Alembic**.
 - **Reverse Proxy:** **Traefik v3**. Handles automatic Let's Encrypt SSL certificates and routing.
 - **Networking:** Private virtual bridge (`web_network`). Services communicate internally via Docker DNS.
 
@@ -68,8 +69,8 @@ Crucial distinction for developers:
 ## ⚠️ Critical Development Notes
 
 * **React Compiler:** This template uses the new React 19 Compiler. You no longer need `useMemo` or `useCallback` in most cases; the compiler optimizes re-renders automatically.
-* **CORS & Authentication:** The backend uses `flask-cors` with explicit origins and `supports_credentials=True`. The frontend **must** use `credentials: 'include'` in all `fetch()` calls. **Read `NETWORK.md`** for the full explanation of the dual-router pattern and common pitfalls.
-* **Statelessness:** Docker containers are **ephemeral**. Any file saved inside a container will be deleted on the next deploy. Use **Volumes** for persistent data.
+* **CORS & Authentication:** The backend uses FastAPI's `CORSMiddleware` with explicit configuration. The frontend **must** use `credentials: 'include'` in all `fetch()` calls. **Read `NETWORK.md`** for the full explanation of the Traefik Zero-Trust setup.
+* **Statelessness:** Docker containers are **ephemeral**. Any file saved inside a container will be deleted on the next deploy. A volume mapped to `/app/data/` is strictly provisioned for the SQLite Database (`database.db`).
 
 ---
 

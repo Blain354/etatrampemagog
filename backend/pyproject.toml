@@ -1,0 +1,13 @@
+[tool.ruff]
+# Enable rules: E (pycodestyle), F (Pyflakes), I (isort), B (flake8-bugbear)
+select = ["E", "F", "I", "B"]
+
+# Allow autoupdate to fix safely
+fix = true
+
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.per-file-ignores]
+# Ignore `F401` (imported but unused) in all `__init__.py` files
+"__init__.py" = ["F401"]

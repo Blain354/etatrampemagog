@@ -3,14 +3,14 @@
 ## Target stack
 
 - Frontend: React 19 + TypeScript + Vite (React Compiler enabled).
-- Backend: Python 3.9 + Flask, run with Gunicorn in production.
+- Backend: Python 3.9+ + FastAPI, run with Uvicorn in production.
 - Infrastructure: Docker Compose + Traefik v3.
 - Internal network: `web_network` (inter-service communication through Docker DNS).
 
 ## Local startup
 
 - Frontend: `cd frontend && npm install && npm run dev` (Vite server).
-- Backend: `cd backend && pip install -r requirements.txt && python app.py`.
+- Backend: `cd backend && pip install -r requirements.txt && python main.py`.
 
 ## Integration conventions
 
@@ -19,8 +19,8 @@
 
 ## Important constraints
 
-- Backend uses `flask-cors`; cross-subdomain communication is expected.
-- Containers are ephemeral: do not store persistent data without volumes.
+- Backend uses `CORSMiddleware` configured by `pydantic-settings`; cross-subdomain communication is expected.
+- Containers are ephemeral: persist data using SQLite via `backend_sqlite_data` volume mounting `/app/data`.
 - Auth is delegated to the proxy (ForwardAuth/OAuth); no app-level password management by default.
 - For security profiles (protected/non-protected), read `security-modes.md`.
 - Server deployment is orchestrated by OpenClaw, with a reference script in `REFERENCE_deploy.sh.md`.

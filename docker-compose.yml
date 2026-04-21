@@ -57,13 +57,15 @@ services:
       # └─────────────────────────────────────────────────────────────────┘
       - "traefik.http.routers.${PROJECT_NAME}-front.middlewares=google-auth@docker"
 
-  # ── Backend (Python Flask / Gunicorn) ────────────────────────────────────
+  # ── Backend (FastAPI / Uvicorn) ────────────────────────────────────
   backend:
     build: ./backend
     container_name: ${PROJECT_NAME}-back
     restart: unless-stopped
     networks:
       - web_network
+    volumes:
+      - backend_sqlite_data:/app/data
     # NO "ports:" — same reasoning as frontend.
     labels:
       - "traefik.enable=true"
@@ -129,6 +131,8 @@ services:
   # volumes:
   #   db_data:
 
+volumes:
+  backend_sqlite_data:
 networks:
   web_network:
     external: true    # This network is created once and shared across ALL projects.

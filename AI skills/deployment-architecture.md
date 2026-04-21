@@ -4,7 +4,7 @@
 
 - Traefik is the entry point (routing + automatic TLS).
 - Frontend is served by Nginx.
-- Flask backend runs behind Gunicorn.
+- FastAPI backend runs behind Uvicorn.
 - All app services connect to Docker network `web_network`.
 
 ## Server orchestration (OpenClaw)

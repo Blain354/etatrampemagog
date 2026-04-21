@@ -125,27 +125,17 @@ CORS(app, origins=[
 
 La spécification CORS interdit `Access-Control-Allow-Origin: *` quand `Access-Control-Allow-Credentials: true`. Le navigateur ignore silencieusement la réponse.
 
-### Flask (ce template)
-
-```python
-from flask_cors import CORS
-
-app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=[
-    f"https://{os.environ.get('PROJECT_NAME', 'template')}.blain-projects.ca",
-    "http://localhost:5173",
-])
-```
-
-### FastAPI (si vous migrez)
+### FastAPI (ce template)
 
 ```python
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic_settings import BaseSettings
 
+# via notre dépendance pydantic-settings
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        f"https://{PROJECT_NAME}.blain-projects.ca",
+        f"https://{settings.project_name}.blain-projects.ca",
         "http://localhost:5173",
     ],
     allow_credentials=True,

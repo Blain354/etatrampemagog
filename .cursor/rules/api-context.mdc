@@ -15,5 +15,5 @@ Use these references when the task touches endpoints or API calls:
 ## Expected checks
 
 - Keep routes under `/api/...`.
-- Keep JSON responses consistent with appropriate HTTP status codes.
-- Use the correct API URL by environment (local vs public).
+- Validate data using `Pydantic` and `SQLModel`.
+- Write unit tests using `TestClient` in `backend/tests/`.
