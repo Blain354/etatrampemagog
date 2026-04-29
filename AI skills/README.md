@@ -5,6 +5,7 @@ This directory centralizes technical context and working rules for AI agents bui
 ## Contents
 
 - `generic-agentic-rules.md`: generic agentic engineering rules.
+- `onboarding.md`: project onboarding flow — triggered automatically for fresh template projects.
 - `project-context.md`: project context and core conventions.
 - `api-endpoints.md`: existing backend endpoints and API conventions.
 - `deployment-architecture.md`: Docker/Traefik architecture and deployment constraints.

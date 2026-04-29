@@ -10,6 +10,9 @@ Keep this rule intentionally short to prevent context rot.
 Do not auto-load all skills/docs.
 Load context only when it is required for the current task.
 
+## 🚨 Onboarding Gate (Mandatory)
+At session start, read `PROJECT.md`. If it contains `TODO: DEFINE YOUR PROJECT` or `ONBOARDING_PENDING`, STOP and run the onboarding flow from `AI skills/onboarding.md` before anything else.
+
 ## Loading principle
 
 - Use specialized rules in `.cursor/rules/*` based on touched files.

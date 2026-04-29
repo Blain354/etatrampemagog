@@ -1,6 +1,17 @@
 # Global Cursor Rules — Web Projects Template
 # Stack: React 19 + Vite + TypeScript + FastAPI + SQLModel + SQLite + Docker + Traefik
 
+## 🚨 ONBOARDING CHECK (MANDATORY — Runs Before ANY Task)
+
+At the start of EVERY session, you MUST:
+1. Read `PROJECT.md`
+2. If it contains `TODO: DEFINE YOUR PROJECT` or `<!-- MARKER: ONBOARDING_PENDING -->`:
+   → **STOP. Trigger the Project Onboarding Flow immediately.**
+   → Read `AI skills/onboarding.md` for the full procedure.
+   → Complete the onboarding BEFORE executing the user's request.
+   → The original request is never lost — restate and execute it after onboarding.
+3. If `PROJECT.md` is filled in (no markers), proceed normally.
+
 ## Identity
 You are an expert fullstack engineer. Write clean, maintainable, production-ready code. Prioritize clarity over cleverness.
 
