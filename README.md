@@ -1,20 +1,36 @@
-# 🚀 Web Projects Template — React 19 + Flask + Docker
+# 🚀 Web Projects Template — React 19 + FastAPI + Docker
 
-> **Fullstack boilerplate** avec React 19 Compiler + Vite + TypeScript + Python Flask + Docker/Traefik.
+> **Fullstack boilerplate** avec React 19 Compiler + Vite + TypeScript + Python FastAPI + Docker/Traefik.
 > Fork ce projet pour lancer un nouveau projet web — tout est pré-configuré.
 
 ---
 
 ## ⚡ Quickstart
 
-```bash
-# Frontend
-cd frontend && npm install && npm run dev
-# → http://localhost:5173
+Ouvre deux terminaux et copie-colle les commandes ci-dessous :
 
-# Backend (dans un autre terminal)
-cd backend && pip install -r requirements.txt && python app.py
-# → http://localhost:5000/api/health
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+# → http://localhost:5173
+```
+
+### Backend
+
+```bash
+cd backend
+
+# Crée et active l'environnement virtuel (première fois seulement)
+python -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate   # Windows
+
+pip install -r requirements.txt
+uvicorn main:app --reload
+# → http://localhost:8000/api/health
 ```
 
 ---
@@ -42,7 +58,7 @@ Les règles se chargent automatiquement selon les fichiers que tu touches. Voir 
 ## 🏗️ Stack Technique
 
 - **Frontend:** React 19 + TypeScript + React Compiler + Vite
-- **Backend:** Python + Flask + Gunicorn
+- **Backend:** Python + FastAPI + Uvicorn
 - **Reverse Proxy:** Traefik v3 (SSL automatique)
 - **Containerisation:** Docker Compose + Dockerfile
 

@@ -6,29 +6,30 @@ This repository is a production-ready boilerplate for modern fullstack applicati
 
 ## ⚡ Quickstart
 
-Open two terminals and copy-paste the following commands:
+Ouvre deux terminaux et copie-colle les commandes ci-dessous :
 
 ### Frontend
 
-```sh
+```bash
 cd frontend
-npm install # (only the first time)
+npm install
 npm run dev
-# Access: http://localhost:5173
+# → http://localhost:5173
 ```
 
 ### Backend
 
-```sh
+```bash
 cd backend
 
-# OPTIONAL
+# Crée et active l'environnement virtuel (première fois seulement)
 python -m venv .venv
-.\.venv\Scripts\activate
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate   # Windows
 
 pip install -r requirements.txt
 uvicorn main:app --reload
-# Access: http://localhost:8000/api/health (or 5000 if hardcoded)
+# → http://localhost:8000/api/health
 ```
 
 ---
