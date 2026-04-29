@@ -1,0 +1,50 @@
+---
+description: Expert planning specialist for complex features
+globs:
+  - "**/*"
+---
+
+# Planner Agent
+
+When asked to plan a feature or complex task:
+
+## Process
+1. **Analyze requirements** — Understand the feature request completely
+2. **Review existing code** — Check current architecture and patterns
+3. **Identify dependencies** — What needs to change and in what order
+4. **Break down** — Small, incremental steps with clear acceptance criteria
+5. **Estimate complexity** — Simple / Medium / Complex per step
+
+## Output Format
+
+```markdown
+# Plan: [Feature Name]
+
+## Overview
+[1-2 sentences describing the feature]
+
+## Steps
+
+### Step 1: [Name] (Complexity: Simple)
+- [ ] Action item
+- [ ] Action item
+- **Files to modify:** `path/to/file`
+- **Acceptance criteria:** What "done" looks like
+
+### Step 2: [Name] (Complexity: Medium)
+...
+
+## Dependencies
+- Requires Step X before Step Y
+- External: API endpoint, database migration, etc.
+
+## Risks
+- [Potential issue and mitigation]
+```
+
+## Rules
+- Always check existing code before planning
+- Prefer small incremental changes over big bang
+- Consider backward compatibility
+- Include testing in the plan
+- Consider deployment impact

@@ -1,0 +1,97 @@
+---
+description: TypeScript + React 19 + Vite coding standards
+globs:
+  - "frontend/**/*.{ts,tsx}"
+  - "frontend/**/*.css"
+---
+
+# TypeScript/React Rules
+
+## Types & Interfaces
+- Use `interface` for object shapes that may be extended
+- Use `type` for unions, intersections, tuples, mapped types
+- Prefer string literal unions over `enum`
+- Add explicit types to all exported functions, shared utilities, public class methods
+- Let TypeScript infer obvious local variable types
+- Extract repeated inline object shapes into named types/interfaces
+
+## React 19 Specifics
+- React Compiler is enabled — no need for `useMemo`/`useCallback` in most cases
+- Define component props with named `interface` or `type`
+- Type callback props explicitly
+- Do NOT use `React.FC`
+- Use Server Components where applicable (Next.js context)
+
+## Immutability
+- Use spread operator for immutable updates
+- Use `Readonly<T>` for props that shouldn't mutate
+- Never mutate state directly — always use setter functions
+
+## Error Handling
+```typescript
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message
+  return 'Unexpected error'
+}
+
+async function loadUser(userId: string): Promise<User> {
+  try {
+    return await riskyOperation(userId)
+  } catch (error: unknown) {
+    logger.error('Operation failed', error)
+    throw new Error(getErrorMessage(error))
+  }
+}
+```
+
+## Input Validation
+- Use Zod for schema-based validation
+- Infer types from schemas:
+```typescript
+const userSchema = z.object({
+  email: z.string().email(),
+  age: z.number().int().min(0).max(150)
+})
+type UserInput = z.infer<typeof userSchema>
+```
+
+## File Organization (Feature-Based)
+```
+src/
+├── components/
+│   ├── hero/
+│   │   ├── Hero.tsx
+│   │   ├── HeroVisual.tsx
+│   │   └── hero.css
+│   └── ui/
+│       ├── Button.tsx
+│       └── SurfaceCard.tsx
+├── hooks/
+│   ├── useDebounce.ts
+│   └── useApi.ts
+├── lib/
+│   ├── api.ts
+│   └── utils.ts
+├── types/
+│   └── index.ts
+└── styles/
+    ├── tokens.css
+    └── global.css
+```
+
+## CSS Rules
+- Use CSS Custom Properties for design tokens (colors, spacing, typography)
+- Animate only compositor-friendly properties: `transform`, `opacity`, `clip-path`
+- Avoid animating: `width`, `height`, `top`, `left`, `margin`, `padding`
+- Use semantic HTML first — no wrapper `div` stacks when semantic elements exist
+
+## API Calls
+- Use the correct API URL by environment (local vs public)
+- Always use `credentials: 'include'` for CORS with auth
+- Handle errors consistently with the `ApiResponse<T>` pattern
+
+## Performance
+- Dynamic import heavy libraries: `const gsap = await import('gsap')`
+- Images: explicit `width`/`height`, `loading="lazy"` for below-fold
+- Max 2 font families, use `font-display: swap`
+- Keep bundle budgets: Landing <150kb JS gzipped, App <300kb

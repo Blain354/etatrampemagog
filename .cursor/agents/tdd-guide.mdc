@@ -1,0 +1,77 @@
+---
+description: TDD expert — guides test-first development
+globs:
+  - "**/*"
+---
+
+# TDD Guide Agent
+
+When implementing new features:
+
+## TDD Cycle
+1. **RED** — Write a failing test
+2. **GREEN** — Write minimal code to pass
+3. **REFACTOR** — Improve while keeping tests green
+
+## Process
+
+### Step 1: Write Test (RED)
+```python
+# test_users.py
+def test_create_user(client):
+    response = client.post("/api/users", json={
+        "username": "testuser",
+        "email": "test@example.com"
+    })
+    assert response.status_code == 201
+    assert response.json()["username"] == "testuser"
+```
+
+### Step 2: Run Test (Should FAIL)
+```bash
+cd backend
+pytest tests/test_users.py::test_create_user -v
+# Expected: FAIL
+```
+
+### Step 3: Write Minimal Code (GREEN)
+```python
+# routers/users.py
+@app.post("/api/users", status_code=201)
+def create_user(user: UserCreate):
+    # Minimal implementation
+    return {"username": user.username, "id": 1}
+```
+
+### Step 4: Run Test (Should PASS)
+```bash
+pytest tests/test_users.py::test_create_user -v
+# Expected: PASS
+```
+
+### Step 5: Refactor
+- Extract common logic
+- Add proper error handling
+- Add database integration
+- Keep tests green
+
+## Test Structure (AAA)
+```python
+def test_feature():
+    # Arrange
+    setup_data()
+    
+    # Act
+    result = do_something()
+    
+    # Assert
+    assert result == expected
+```
+
+## Rules
+- Write test BEFORE implementation
+- Test behavior, not implementation
+- One concept per test
+- Use descriptive test names
+- Test edge cases and errors
+- Keep tests fast (<100ms each)

@@ -1,0 +1,90 @@
+---
+description: Development workflow and git conventions
+globs:
+  - "**/*"
+---
+
+# Development Workflow
+
+## Feature Implementation Pipeline
+
+### 0. Research & Reuse (Mandatory)
+- Search existing codebase for similar implementations
+- Check if a library/package already solves the problem
+- Prefer battle-tested solutions over hand-rolled code
+- Look for open-source projects solving 80%+ of the problem
+
+### 1. Plan First
+- Create implementation plan before coding
+- Identify impacted endpoints, components, and files
+- Clarify local vs production impact
+- Break down into small, incremental steps
+
+### 2. TDD Approach (For new features)
+- Write tests first (RED)
+- Implement to pass tests (GREEN)
+- Refactor (IMPROVE)
+- Verify 80%+ coverage
+
+### 3. Incremental Implementation
+- Make small, focused changes
+- Verify API compatibility for every changed/added endpoint
+- Update technical documentation when contracts change
+- Run linters and type checkers after each change
+
+### 4. Local Verification
+**Frontend:**
+```bash
+cd frontend
+npm run dev      # Dev server
+npm run build    # Production build
+npm run lint     # ESLint check
+```
+
+**Backend:**
+```bash
+cd backend
+python app.py    # Or: flask run
+# Check: GET /api/health
+```
+
+**Full Stack:**
+```bash
+docker-compose up --build
+```
+
+### 5. Pre-Commit Checks
+- All tests passing
+- Linting clean
+- Type checking clean
+- No secrets in code
+- Documentation updated if needed
+
+### 6. Commit & Push
+- Use conventional commits format:
+  - `feat:` new feature
+  - `fix:` bug fix
+  - `docs:` documentation
+  - `style:` formatting
+  - `refactor:` code change
+  - `test:` tests
+  - `chore:` maintenance
+- Example: `feat(auth): add JWT login endpoint`
+
+## Definition of Done
+- [ ] Code builds/starts without errors
+- [ ] All tests passing (80%+ coverage)
+- [ ] Linting and type checking clean
+- [ ] Modified endpoints respond correctly
+- [ ] Behavior compatible with Docker/Traefik deployment
+- [ ] Documentation updated when relevant
+- [ ] No secrets or hardcoded values
+- [ ] Security checklist passed
+
+## Emergency/Hotfix Workflow
+1. Create branch from `main`: `hotfix/description`
+2. Fix with minimal changes
+3. Test locally
+4. PR with expedited review
+5. Merge and deploy
+6. Monitor logs

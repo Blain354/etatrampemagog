@@ -1,0 +1,80 @@
+---
+description: Web performance and optimization rules
+globs:
+  - "frontend/**/*"
+  - "**/*.css"
+---
+
+# Performance Rules
+
+## Core Web Vitals Targets
+| Metric | Target |
+|--------|--------|
+| LCP | < 2.5s |
+| INP | < 200ms |
+| CLS | < 0.1 |
+| FCP | < 1.5s |
+| TBT | < 200ms |
+
+## Bundle Budgets
+| Page Type | JS Budget (gzipped) | CSS Budget |
+|-----------|---------------------|------------|
+| Landing | < 150kb | < 30kb |
+| App | < 300kb | < 50kb |
+| Microsite | < 80kb | < 15kb |
+
+## Loading Strategy
+1. Inline critical above-the-fold CSS where justified
+2. Preload hero image and primary font only
+3. Defer non-critical CSS or JS
+4. Dynamically import heavy libraries:
+```typescript
+const gsapModule = await import('gsap')
+const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+```
+
+## Image Optimization
+- Always provide explicit `width` and `height`
+- Use `loading="eager"` + `fetchpriority="high"` for hero only
+- Use `loading="lazy"` for below-the-fold images
+- Prefer AVIF or WebP with fallbacks
+- Never ship source images far beyond rendered size
+
+## Font Loading
+- Max 2 font families unless clearly justified
+- Use `font-display: swap`
+- Subset where possible
+- Preload only truly critical weight/style
+
+## Animation Performance
+- Animate ONLY compositor-friendly properties:
+  - ✅ `transform`, `opacity`, `clip-path`
+  - ✅ `filter` (sparingly)
+- Avoid animating layout-bound properties:
+  - ❌ `width`, `height`, `top`, `left`, `margin`, `padding`
+- Use `will-change` narrowly and remove when done
+- Prefer CSS for simple transitions
+- Use `requestAnimationFrame` or established libraries for JS motion
+- Avoid scroll handler churn — use IntersectionObserver
+
+## React 19 Performance
+- React Compiler handles memoization automatically
+- Still split large components for better tree-shaking
+- Use `React.lazy()` + `Suspense` for route-based code splitting
+- Keep component props stable (avoid inline objects/functions when possible)
+
+## Backend Performance
+- Use connection pooling for databases
+- Cache expensive computations (Redis)
+- Use async/await for I/O-bound operations
+- Implement pagination for large datasets
+- Set appropriate timeouts on external API calls
+
+## Performance Checklist
+- [ ] All images have explicit dimensions
+- [ ] No render-blocking resources
+- [ ] No layout shifts from dynamic content
+- [ ] Motion stays on compositor-friendly properties
+- [ ] Third-party scripts load async/defer
+- [ ] Bundle sizes within budget
+- [ ] API responses paginated where applicable

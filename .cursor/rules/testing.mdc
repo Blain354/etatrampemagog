@@ -1,0 +1,92 @@
+---
+description: Testing standards and TDD workflow
+globs:
+  - "frontend/**/*.{ts,tsx}"
+  - "backend/**/*.py"
+  - "**/*.test.*"
+  - "**/*.spec.*"
+---
+
+# Testing Rules
+
+## Minimum Coverage: 80%
+
+## Test Types (ALL required)
+1. **Unit Tests** — Individual functions, utilities, components
+2. **Integration Tests** — API endpoints, database operations
+3. **E2E Tests** — Critical user flows (Playwright/Cypress)
+
+## TDD Workflow (Mandatory for new features)
+1. **RED** — Write test first (should FAIL)
+2. **GREEN** — Write minimal implementation (test PASSES)
+3. **IMPROVE** — Refactor
+4. **VERIFY** — Coverage 80%+
+
+## Test Structure (AAA Pattern)
+```typescript
+test('returns empty array when no markets match query', () => {
+  // Arrange
+  const query = 'nonexistent'
+  const markets = []
+
+  // Act
+  const result = searchMarkets(markets, query)
+
+  // Assert
+  expect(result).toEqual([])
+})
+```
+
+## Test Naming
+- Use descriptive names explaining behavior under test
+- Format: `should [expected behavior] when [condition]`
+- Examples:
+  - `returns empty array when no markets match query`
+  - `throws error when API key is missing`
+  - `falls back to substring search when Redis is unavailable`
+
+## Frontend Testing (Vitest + React Testing Library)
+```typescript
+import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import UserCard from './UserCard'
+
+describe('UserCard', () => {
+  it('calls onSelect when clicked', () => {
+    const onSelect = vi.fn()
+    render(<UserCard user={{ id: '1', name: 'Test' }} onSelect={onSelect} />)
+    fireEvent.click(screen.getByRole('button'))
+    expect(onSelect).toHaveBeenCalledWith('1')
+  })
+})
+```
+
+## Backend Testing (pytest)
+```python
+import pytest
+from app import create_app
+
+@pytest.fixture
+def client():
+    app = create_app(testing=True)
+    with app.test_client() as client:
+        yield client
+
+def test_health_endpoint(client):
+    response = client.get('/api/health')
+    assert response.status_code == 200
+    assert response.json['success'] is True
+```
+
+## Mocking Rules
+- Mock external services (APIs, DB, file system)
+- Don't mock what you don't own (test real logic)
+- Reset mocks between tests
+- Use factory functions for test data
+
+## Coverage Checklist
+- [ ] All public functions have tests
+- [ ] All API endpoints have integration tests
+- [ ] Critical user flows have E2E tests
+- [ ] Edge cases and error paths covered
+- [ ] 80%+ coverage maintained

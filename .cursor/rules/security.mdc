@@ -1,0 +1,52 @@
+---
+description: Security checks and guidelines
+globs:
+  - "**/*"
+---
+
+# Security Rules
+
+## Mandatory Pre-Commit Checks
+- [ ] No hardcoded secrets (API keys, passwords, tokens)
+- [ ] All user inputs validated
+- [ ] SQL injection prevention (parameterized queries)
+- [ ] XSS prevention (sanitized HTML output)
+- [ ] CSRF protection enabled where needed
+- [ ] Authentication/authorization verified on protected routes
+- [ ] Rate limiting on all endpoints
+- [ ] Error messages don't leak sensitive data
+
+## Secret Management
+- NEVER hardcode secrets in source code
+- ALWAYS use environment variables or a secret manager
+- Validate required secrets are present at startup
+- Rotate any secrets that may have been exposed
+
+## Frontend Security
+- Sanitize all user-generated HTML (DOMPurify)
+- Use `dangerouslySetInnerHTML` ONLY with sanitized content
+- Validate all form inputs client-side AND server-side
+- Use `Content-Security-Policy` headers
+- Enable `X-Frame-Options: DENY` or `SAMEORIGIN`
+
+## Backend Security
+- Use parameterized queries for ALL database operations
+- Hash passwords with bcrypt/Argon2 (never MD5/SHA1)
+- Implement JWT or session-based auth correctly
+- Set secure cookie flags (`HttpOnly`, `Secure`, `SameSite`)
+- Validate file uploads (type, size, content)
+- Log security events (failed auth, suspicious activity)
+
+## Docker Security
+- Run containers as non-root user
+- Use specific image tags (not `latest`)
+- Scan images for vulnerabilities
+- Keep secrets out of Docker layers (use BuildKit secrets)
+
+## If Security Issue Found
+1. STOP immediately
+2. Assess scope and impact
+3. Fix CRITICAL issues before continuing
+4. Rotate any exposed secrets
+5. Review entire codebase for similar issues
+6. Document the fix and lessons learned

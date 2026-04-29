@@ -1,14 +1,37 @@
-# Cursor configuration
+# Cursor Rules
 
-This directory contains Cursor-specific configuration.
+This directory contains context-aware rules for Cursor AI.
 
-## Rules
+## How It Works
 
-- Minimal global rule: `.cursor/rules/agentic-programming.mdc`.
-- Specialized rules (loaded by file/task): `deployment-context.mdc`, `api-context.mdc`, `workflow-context.mdc`, `rule-authoring-context.mdc`.
-- Frontend visual rule: `frontend-steel-signature-colors.mdc` (Steel Signature tokens + required header light/dark toggle for app shells).
-- `AI skills/` documentation is referenced on demand, never permanently preloaded.
+Cursor automatically loads rules based on the files you're editing:
 
-## Project Skills
+| Rule | Trigger | Purpose |
+|------|---------|---------|
+| `agentic-programming.mdc` | All files | Global context loading strategy |
+| `typescript-react.mdc` | `frontend/**/*.{ts,tsx}` | React 19 + TypeScript + Vite standards |
+| `python-flask.mdc` | `backend/**/*.py` | Python + Flask standards |
+| `api-context.mdc` | `backend/**/*.py`, `frontend/src/**/*` | API endpoint guidelines |
+| `deployment-context.mdc` | Docker, env files | Infrastructure constraints |
+| `security.mdc` | All files | Security checks |
+| `testing.mdc` | Test files, source files | TDD workflow and standards |
+| `performance.mdc` | Frontend files | Web performance optimization |
+| `workflow.mdc` | All files | Development workflow and git conventions |
 
-- `.cursor/skills/steel-signature-frontend/SKILL.md`: reusable frontend skill enforcing Steel Signature token and color usage.
+## Global Rule
+
+The `.cursorrules` file in the project root provides baseline conventions that apply to all files.
+
+## Adding New Rules
+
+1. Create a new `.mdc` file in this directory
+2. Add frontmatter with `description` and `globs`
+3. Keep rules focused and concise
+4. Reference `AI skills/*` for detailed documentation
+
+## Best Practices
+
+- Rules are loaded based on file globs — keep them targeted
+- Don't duplicate content between rules
+- Update rules when project conventions change
+- Write all rules in English

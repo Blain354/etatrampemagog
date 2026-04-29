@@ -1,0 +1,123 @@
+---
+description: Database context for SQLModel, SQLite, and Alembic migrations
+globs:
+  - "backend/**/*.py"
+  - "backend/alembic/**/*"
+---
+
+# Database Rules
+
+## Stack
+- **SQLModel** — ORM (combines SQLAlchemy + Pydantic)
+- **SQLite** — Database (file-based)
+- **Alembic** — Migration tool
+
+## SQLModel Best Practices
+
+### Model Definition
+```python
+from sqlmodel import Field, SQLModel
+from typing import Optional
+
+class UserBase(SQLModel):
+    username: str = Field(index=True, unique=True)
+    email: str = Field(index=True, unique=True)
+    is_active: bool = True
+
+class User(UserBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+class UserCreate(UserBase):
+    pass
+
+class UserRead(UserBase):
+    id: int
+```
+
+### Database Connection
+```python
+from sqlmodel import create_engine, Session
+
+sqlite_file_name = "database.db"
+sqlite_url = f"sqlite:///{sqlite_file_name}"
+engine = create_engine(sqlite_url, connect_args={"check_same_thread": False})
+
+def get_session():
+    with Session(engine) as session:
+        yield session
+```
+
+### CRUD with SQLModel
+```python
+from fastapi import Depends
+from sqlmodel import Session, select
+
+def create_user(user: UserCreate, session: Session = Depends(get_session)):
+    db_user = User.model_validate(user)
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+    return db_user
+
+def get_users(session: Session = Depends(get_session)):
+    statement = select(User)
+    return session.exec(statement).all()
+
+def get_user(user_id: int, session: Session = Depends(get_session)):
+    return session.get(User, user_id)
+```
+
+## Alembic Migrations
+
+### Create Migration
+```bash
+cd backend
+alembic revision --autogenerate -m "add users table"
+```
+
+### Apply Migration
+```bash
+alembic upgrade head
+```
+
+### Rollback
+```bash
+alembic downgrade -1
+```
+
+### Migration File Structure
+```python
+"""add users table
+
+Revision ID: 1cd6f7532c92
+Revises: 
+Create Date: 2025-01-01
+"""
+from alembic import op
+import sqlalchemy as sa
+
+revision = '1cd6f7532c92'
+down_revision = None
+
+def upgrade():
+    op.create_table(
+        'user',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('username', sa.String(), nullable=False),
+        sa.PrimaryKeyConstraint('id')
+    )
+
+def downgrade():
+    op.drop_table('user')
+```
+
+## Indexing
+- Add `index=True` on frequently queried columns
+- Add `unique=True` on columns requiring uniqueness
+- Use composite indexes for multi-column queries
+
+## Anti-Patterns
+- DON'T use raw SQL when SQLModel can handle it
+- DON'T forget to commit after writes
+- DON'T use `select *` — select specific columns
+- DON'T forget to handle `None` results from `.get()`

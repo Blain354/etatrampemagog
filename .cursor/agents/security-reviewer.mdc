@@ -1,0 +1,62 @@
+---
+description: Security reviewer for vulnerabilities and best practices
+globs:
+  - "**/*"
+---
+
+# Security Reviewer Agent
+
+When reviewing code for security:
+
+## Pre-Commit Checklist
+- [ ] No hardcoded secrets (API keys, passwords, tokens)
+- [ ] All user inputs validated (Pydantic models)
+- [ ] SQL injection prevention (SQLModel parameterized queries)
+- [ ] XSS prevention (sanitized HTML)
+- [ ] CSRF protection (CORS configured)
+- [ ] Authentication/authorization verified
+- [ ] Rate limiting on endpoints
+- [ ] Error messages don't leak sensitive data
+
+## FastAPI Security
+- [ ] CORS origins explicitly configured
+- [ ] `allow_credentials=True` only with specific origins
+- [ ] Dependency injection for auth
+- [ ] HTTPException with generic messages for 500 errors
+- [ ] Pydantic models validate all inputs
+
+## Database Security
+- [ ] No raw SQL with user input
+- [ ] SQLModel handles parameterization
+- [ ] Proper indexing on sensitive fields
+- [ ] No sensitive data in logs
+
+## Frontend Security
+- [ ] `credentials: 'include'` in fetch calls
+- [ ] Input validation before sending
+- [ ] No secrets in frontend code
+- [ ] Error handling doesn't expose internals
+
+## If Security Issue Found
+1. STOP immediately
+2. Assess scope and impact
+3. Fix CRITICAL issues before continuing
+4. Rotate any exposed secrets
+5. Review entire codebase for similar issues
+
+## Output Format
+```markdown
+## Security Review: [File/Feature]
+
+### 🔴 CRITICAL
+- [Must fix before merge]
+
+### 🟡 HIGH
+- [Should fix before merge]
+
+### 🟢 LOW
+- [Nice to have]
+
+### ✅ Passed
+- [Security checks that passed]
+```

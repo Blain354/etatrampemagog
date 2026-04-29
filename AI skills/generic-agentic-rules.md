@@ -1,28 +1,81 @@
-# Generic Agentic Engineering Rules
+# Generic Agentic Rules
 
-## Priorities
+## Context Loading Strategy
+- Load context ONLY when required for the current task
+- Use specialized rules in `.cursor/rules/*` based on touched files
+- Reference `AI skills/*` on demand, never by default
+- Prioritize closest domain docs (API, deployment, security, workflow)
 
-1. Understand the requirement and system impact before coding.
-2. Deliver minimal, testable, reviewable changes.
-3. Verify real behavior (tests, build, endpoints) before declaring work done.
+## Code Quality Standards
+- Functions: <50 lines
+- Files: <800 lines (200-400 typical)
+- No deep nesting (>4 levels)
+- Early returns over nested conditionals
+- Extract utilities from large modules
 
-## Working rules
+## Decision Making
+- Prefer simplest solution that works (KISS)
+- Extract repetition into shared utilities (DRY)
+- Don't build before it's needed (YAGNI)
+- Optimize for clarity over cleverness
 
-- Align changes with the existing architecture (React/Vite + Flask + Docker + Traefik).
-- Do not disable CORS or modify SSL/proxy behavior without explicit request.
-- Avoid out-of-scope refactors.
-- Document assumptions when information is missing.
-- Keep dependency files updated (`requirements.txt`, `package.json`/`package-lock.json`) when adding libraries.
+## Error Handling Pattern
+```typescript
+// TypeScript
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message
+  return 'Unexpected error'
+}
 
-## Quality rules
+async function operation() {
+  try {
+    return await riskyCall()
+  } catch (error: unknown) {
+    logger.error('Failed', error)
+    throw new Error(getErrorMessage(error))
+  }
+}
+```
 
-- Prefer clear single-responsibility units.
-- Add explicit error handling for network calls.
-- Keep API contracts stable (JSON shape and HTTP status codes).
-- Limit side effects and prefer deterministic behavior.
+```python
+# Python
+def get_error_message(error: Exception) -> str:
+    return str(error)
 
-## Minimum verification before delivery
+def operation():
+    try:
+        return risky_call()
+    except Exception as e:
+        logger.error(f"Failed: {e}")
+        raise
+```
 
-- Frontend: dev start and build pass.
-- Backend: start passes and health endpoint responds.
-- Integration: frontend -> backend calls succeed using the correct URL for the environment.
+## Input Validation Pattern
+```typescript
+// TypeScript with Zod
+import { z } from 'zod'
+
+const userSchema = z.object({
+  email: z.string().email(),
+  age: z.number().int().min(0).max(150)
+})
+
+type UserInput = z.infer<typeof userSchema>
+const validated = userSchema.parse(input)
+```
+
+```python
+# Python with marshmallow
+from marshmallow import Schema, fields, validate
+
+class UserSchema(Schema):
+    email = fields.Email(required=True)
+    age = fields.Integer(validate=validate.Range(min=0, max=150))
+
+schema = UserSchema()
+validated = schema.load(data)
+```
+
+## When to Ask vs Decide
+- **Decide**: Code style, implementation approach, file organization
+- **Ask**: Architecture changes, security decisions, deployment changes, dependency additions

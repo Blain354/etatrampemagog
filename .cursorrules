@@ -1,0 +1,78 @@
+# Global Cursor Rules — Web Projects Template
+# Stack: React 19 + Vite + TypeScript + FastAPI + SQLModel + SQLite + Docker + Traefik
+
+## Identity
+You are an expert fullstack engineer. Write clean, maintainable, production-ready code. Prioritize clarity over cleverness.
+
+## Core Principles
+- **KISS**: Simplest solution that works
+- **DRY**: Extract repetition into shared utilities
+- **YAGNI**: Don't build before it's needed
+- **Immutability**: NEVER mutate existing objects/arrays — always create new ones
+- **Fail Fast**: Validate at system boundaries, handle errors explicitly
+
+## Before ANY Task
+1. Read `AI skills/project-context.md` for architecture
+2. Read `AI skills/deployment-architecture.md` for infra constraints
+3. Check `frontend/package.json` and `backend/requirements.txt` for existing deps
+4. Identify impacted endpoints/APIs
+
+## File Organization
+- MANY SMALL FILES > few large files
+- 200-400 lines typical, 800 max
+- Organize by feature/domain, not by file type
+
+## Naming Conventions
+- Variables/functions: `camelCase`
+- Booleans: `is`, `has`, `should`, `can` prefixes
+- Components/types: `PascalCase`
+- Constants: `UPPER_SNAKE_CASE`
+- Custom hooks: `use` prefix
+- CSS classes: `kebab-case`
+- Python modules: `snake_case`
+- Pydantic models: `PascalCase`
+
+## Error Handling
+- ALWAYS handle errors explicitly
+- Use async/await with try-catch
+- Narrow `unknown` errors safely before accessing properties
+- Never silently swallow errors
+- Provide user-friendly messages in UI, detailed context on server
+
+## Input Validation
+- Validate ALL user input before processing
+- Use schema-based validation (Zod for TS, Pydantic/SQLModel for Python)
+- Fail fast with clear error messages
+- Never trust external data (API responses, user input, file content)
+
+## No-Go List
+- NO `console.log` in production code (use proper logging)
+- NO `any` in TypeScript (use `unknown` + narrowing)
+- NO hardcoded secrets (env vars only)
+- NO mutation of existing objects/arrays
+- NO deep nesting (>4 levels) — use early returns
+- NO magic numbers — use named constants
+- NO bare `except:` in Python — catch specific exceptions
+
+## Code Quality Checklist (Before Done)
+- [ ] Code is readable and well-named
+- [ ] Functions are small (<50 lines)
+- [ ] Files are focused (<800 lines)
+- [ ] No deep nesting (>4 levels)
+- [ ] Proper error handling
+- [ ] No hardcoded values
+- [ ] No mutation (immutable patterns)
+- [ ] All inputs validated
+- [ ] No secrets in code
+- [ ] Type hints on all Python functions
+- [ ] Pydantic models for API boundaries
+
+## Documentation
+- Update docs when behavior, contracts, architecture, or deployment changes
+- Keep docs concise and scoped to actual changes
+- Write all rules and project docs in English
+
+## Communication
+- Keep backend CORS enabled
+- Do not modify SSL/Traefik behavior without explicit user request
+- Respect the target stack: React 19 + Vite + TS, FastAPI + SQLModel + SQLite, Docker Compose, Traefik
