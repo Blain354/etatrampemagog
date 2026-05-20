@@ -100,6 +100,8 @@ def _is_closed(excerpt: str) -> bool:
     lowered = excerpt.lower()
     if re.search(r"\bferm[ée]e?s?\b", lowered):
         return True
+    if re.search(r"\bfermeture\b", lowered):
+        return True
     return bool(re.search(r"\bindisponible\b", lowered))
 
 
