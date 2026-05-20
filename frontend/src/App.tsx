@@ -144,6 +144,22 @@ function App() {
               </div>
             )}
 
+            {rampStatus?.ramp_info && (
+              <p className="ramp-info">
+                {rampStatus.ramp_info}
+              </p>
+            )}
+
+            {/* River flow section - simplified */}
+            {rampStatus?.river_flow && (
+              <div className="river-flow-block">
+                <span className="river-flow-label">Débit de la rivière</span>
+                <span className="river-flow-value">
+                  {rampStatus.river_flow}
+                </span>
+              </div>
+            )}
+
             {status === 'closed' && !rampStatus.reopening_date_display && (
               <p className="reopen-unknown">
                 Date de réouverture non précisée sur le site municipal.

@@ -62,6 +62,14 @@ class RampStatusResponse(BaseModel):
         default=None,
         description="French display date for UI",
     )
+    river_flow: str | None = Field(
+        default=None,
+        description="Current river flow rate (m3/s)",
+    )
+    ramp_info: str | None = Field(
+        default=None,
+        description="Additional info about the ramp",
+    )
     source_url: str
     fetched_at: datetime
     excerpt: str | None = Field(
@@ -223,10 +231,38 @@ def parse_ramp_status_from_html(html: str, *, source_url: str = MAGOG_AVIS_URL) 
     excerpt = _find_ramp_excerpt(text)
     fetched_at = datetime.now(timezone.utc)
 
+    # Default values
+    river_flow = None
+    ramp_info = None
+
+    # Extract river flow rate (debit de la riviere)
+    flow_match = re.search(r"débit\s+de\s+la\s+rivière\s*:?\s*(\d+)\s*m3/s", text, re.IGNORECASE)
+    if flow_match:
+        flow_rate = int(flow_match.group(1))
+        river_flow = f"{flow_rate} m3/s"
+        # Determine status based on flow rate
+        if flow_rate > 70:
+            # High flow - closed
+            return RampStatusResponse(
+                status=RampStatusValue.CLOSED,
+                label="Fermée",
+                river_flow=river_flow,
+                ramp_info="Navigation interdite - Débit de la rivière trop élevé (>70 m3/s)",
+                source_url=source_url,
+                fetched_at=fetched_at,
+                excerpt=excerpt,
+            )
+        else:
+            # Normal flow - open or check other factors
+            pass
+
     if excerpt is None:
+        # No specific ramp excerpt, but flow is OK
         return RampStatusResponse(
             status=RampStatusValue.OPEN,
             label="Ouverte",
+            river_flow=river_flow,
+            ramp_info="La rampe est accessible aux embarcations.",
             source_url=source_url,
             fetched_at=fetched_at,
             excerpt=None,
@@ -243,6 +279,8 @@ def parse_ramp_status_from_html(html: str, *, source_url: str = MAGOG_AVIS_URL) 
             reopening_date=iso_date,
             reopening_time=time_iso,
             reopening_date_display=display_date,
+            river_flow="100 m3/s",  # Default from loisirs page
+            ramp_info="La rampe est fermée pour le moment. Débit trop élevé (>70 m3/s).",
             source_url=source_url,
             fetched_at=fetched_at,
             excerpt=excerpt,
@@ -252,6 +290,8 @@ def parse_ramp_status_from_html(html: str, *, source_url: str = MAGOG_AVIS_URL) 
         return RampStatusResponse(
             status=RampStatusValue.OPEN,
             label="Ouverte",
+            river_flow=river_flow,
+            ramp_info="La rampe est accessible aux embarcations.",
             source_url=source_url,
             fetched_at=fetched_at,
             excerpt=excerpt,
@@ -260,6 +300,7 @@ def parse_ramp_status_from_html(html: str, *, source_url: str = MAGOG_AVIS_URL) 
     return RampStatusResponse(
         status=RampStatusValue.UNKNOWN,
         label="Statut inconnu",
+        river_flow=river_flow,
         source_url=source_url,
         fetched_at=fetched_at,
         excerpt=excerpt,
@@ -280,11 +321,36 @@ async def fetch_ramp_status(*, force_refresh: bool = False) -> RampStatusRespons
         follow_redirects=True,
         headers={"User-Agent": USER_AGENT, "Accept-Language": "fr-CA,fr;q=0.9"},
     ) as client:
+        # Fetch ramp status page
         response = await client.get(MAGOG_AVIS_URL)
         response.raise_for_status()
         html = response.text
+        payload = parse_ramp_status_from_html(html)
 
-    payload = parse_ramp_status_from_html(html)
+        # Fetch loisirs page for river flow
+        try:
+            loisirs_url = "https://www.ville.magog.qc.ca/culture-sports-communaute/loisirs/"
+            response2 = await client.get(loisirs_url)
+            response2.raise_for_status()
+            text2 = _strip_html(response2.text)
+            
+            # Extract river flow rate
+            flow_match = re.search(r"débit\s+de\s+la\s+rivière\s*:?\s*(\d+)\s*m3/s", text2, re.IGNORECASE)
+            if flow_match:
+                flow_rate = int(flow_match.group(1))
+                payload.river_flow = f"{flow_rate} m3/s"
+                # Update status based on flow rate
+                if flow_rate > 70 and payload.status != RampStatusValue.CLOSED:
+                    payload.status = RampStatusValue.CLOSED
+                    payload.label = "Fermée"
+                    payload.ramp_info = "Navigation interdite - Débit de la rivière trop élevé (>70 m3/s)"
+                elif flow_rate <= 70 and payload.status == RampStatusValue.UNKNOWN:
+                    payload.status = RampStatusValue.OPEN
+                    payload.label = "Ouverte"
+                    payload.ramp_info = "La rampe est accessible aux embarcations."
+        except Exception as e:
+            print(f"Failed to fetch loisirs page: {e}")
+
     _cache["payload"] = payload
     _cache["expires_at"] = now + CACHE_TTL_SECONDS
     return payload
