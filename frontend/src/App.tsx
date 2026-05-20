@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { AlertCircle, Anchor, CheckCircle2, Loader2, RefreshCw, XCircle } from 'lucide-react'
 import { apiFetch } from './api'
 import type { RampStatus, RampStatusResponse } from './types/ramp'
@@ -31,6 +31,8 @@ function App() {
   const [loadState, setLoadState] = useState<LoadState>('loading')
   const [rampStatus, setRampStatus] = useState<RampStatusResponse | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [isButtonDisabledTimer, setButtonDisabledTimer] = useState(false)
+  const timerRef = useRef<any>(null)
 
   const loadStatus = useCallback(async () => {
     setLoadState('loading')
@@ -53,6 +55,22 @@ function App() {
     }
   }, [])
 
+  const handleRefresh = useCallback(() => {
+    if (isButtonDisabledTimer) return
+    void loadStatus()
+    setButtonDisabledTimer(true)
+    if (timerRef.current) clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => {
+      setButtonDisabledTimer(false)
+    }, 10000)
+  }, [loadStatus, isButtonDisabledTimer])
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [])
+
   useEffect(() => {
     void loadStatus()
   }, [loadStatus])
@@ -72,8 +90,8 @@ function App() {
         <button
           type="button"
           className="refresh-btn"
-          onClick={() => void loadStatus()}
-          disabled={loadState === 'loading'}
+          onClick={handleRefresh}
+          disabled={loadState === 'loading' || isButtonDisabledTimer}
           aria-busy={loadState === 'loading'}
         >
           <RefreshCw className={isRefreshing ? 'spin' : undefined} aria-hidden="true" />
