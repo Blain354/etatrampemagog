@@ -177,6 +177,14 @@ function App() {
             >
               Voir l&apos;avis officiel
             </a>
+            <a
+              className="source-link"
+              href="https://www.ville.magog.qc.ca/culture-sports-communaute/loisirs/#ouverture-fermeture-rampe"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Détails : Capitainerie &amp; Débit rivière
+            </a>
           </section>
         )}
       </main>
