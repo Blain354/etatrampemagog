@@ -14,7 +14,8 @@
   <a href="#-stack-technique">Stack</a> ·
   <a href="#-déploiement">Déploiement</a> ·
   <a href="#-agent-skills">AI Skills</a> ·
-  <a href="how_to_use_repo.md">Guide méthodologique</a>
+  <a href="how_to_use_repo.md">Guide méthodologique</a> ·
+  <a href="OPENCLAW.md">🤖 Communication OpenClaw</a>
 </p>
 
 ---
@@ -103,15 +104,35 @@ Voir [`how_to_use_repo.md`](how_to_use_repo.md) pour le guide méthodologique co
 ```
 Browser → API (externe)  : https://api.[NAME].blain-projects.ca/api/...
 Docker → Docker (interne): http://backend:5000/api/...
+
+Agent OpenClaw (interne)  : http://openclaw-bridge:8000/api/internal/v1/agents/{agent}/send
 ```
 
 Le frontend utilise toujours l'URL publique. Les services Docker communiquent en interne via Docker DNS (plus rapide, bypass le proxy).
+
+### 🤖 Communication avec les Agents OpenClaw
+
+Ce template intègre une architecture standard pour communiquer avec n'importe quel agent OpenClaw (Fishey, Buddy, Makey, etc.) depuis ton backend Docker.
+
+🔗 **[Voir OPENCLAW.md](OPENCLAW.md)** pour la documentation complète : architecture, sécurité, code d'intégration, dépannage.
+
+En résumé :
+```python
+import httpx
+r = httpx.post(
+    "http://openclaw-bridge:8000/api/internal/v1/agents/fishey/send",
+    json={"prompt": "Ta question", "timeout_seconds": 120},
+    headers={"X-Bridge-Token": "bridge-super-secret-token-2026"}
+)
+print(r.json()["response"])  # Réponse JSON structurée de l'agent
+```
 
 ---
 
 ## 📚 Documentation
 
 - [`how_to_use_repo.md`](how_to_use_repo.md) — Guide méthodologique complet (skills, workflow, anti-patterns)
+- [`OPENCLAW.md`](OPENCLAW.md) — 🤖 Architecture de communication avec les agents OpenClaw
 - [`AI skills/README.md`](AI skills/README.md) — Index des skills disponibles
 - [`NETWORK.md`](NETWORK.md) — Architecture réseau Traefik + Nginx
 

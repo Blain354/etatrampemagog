@@ -1,9 +1,12 @@
 from typing import List, Union
 
-from fastapi import FastAPI
+import httpx
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from services.ramp_status import RampStatusResponse, fetch_ramp_status
 
 
 class Settings(BaseSettings):
@@ -48,6 +51,17 @@ app.add_middleware(
 @app.get("/api/health")
 def health():
     return {"status": "online", "service": "python-backend", "project": settings.project_name}
+
+
+@app.get("/api/ramp-status", response_model=RampStatusResponse)
+async def ramp_status() -> RampStatusResponse:
+    try:
+        return await fetch_ramp_status()
+    except httpx.HTTPError as exc:
+        raise HTTPException(
+            status_code=502,
+            detail="Impossible de récupérer les avis de la Ville de Magog.",
+        ) from exc
 
 
 if __name__ == "__main__":

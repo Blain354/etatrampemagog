@@ -65,6 +65,61 @@ Crucial distinction for developers:
 2. **Server to Server (Internal):** If you add a service (like a database manager or a worker) that needs to talk to the Python backend, use the Docker alias:
   `http://backend:5000/api/status` (Faster, bypasses the public internet).
 
+3. **Agent to Agent (via OpenClaw Bridge):** To talk to an OpenClaw agent (Fishey, Buddy, Makey), use the internal bridge endpoint:
+  `http://openclaw-bridge:8000/api/internal/v1/agents/{agent}/send`
+  → Requires `X-Bridge-Token` header. Full guide: **[OPENCLAW.md](OPENCLAW.md)**
+
+---
+
+## 🤖 Communication avec les Agents OpenClaw
+
+### Intégration en 3 étapes
+
+Ton projet peut communiquer avec n'importe quel agent OpenClaw (ex: Fishey pour la pêche) via le **Bridge permanent**.
+
+**1. Assure-toi que ton conteneur est sur `web_network` :**
+
+```yaml
+# docker-compose.yml
+networks:
+  web_network:
+    external: true
+```
+
+**2. Ajoute un transport dans ton backend :**
+
+```python
+# backend/openclaw_transport.py
+import httpx
+
+def send_to_agent(agent: str, prompt: str) -> dict:
+    return httpx.post(
+        f"http://openclaw-bridge:8000/api/internal/v1/agents/{agent}/send",
+        json={"prompt": prompt, "timeout_seconds": 120},
+        headers={"X-Bridge-Token": "bridge-super-secret-token-2026"},
+        timeout=150,
+    ).json()
+```
+
+**3. Utilise-le :**
+
+```python
+result = send_to_agent("fishey", "Meilleurs spots de pêche au doré?")
+if result["success"]:
+    print(result["response"])  # JSON structuré de l'agent
+```
+
+### Architecture
+
+```
+Ton Backend → Bridge (Docker) → Relay Helper (Host) → OpenClaw CLI → Agent
+```
+
+Le bridge (`openclaw-bridge`) est un service Docker permanent, déjà déployé sur le serveur.
+Aucune installation supplémentaire nécessaire dans ton projet.
+
+> 📖 **[Documentation complète : OPENCLAW.md](OPENCLAW.md)** — Architecture détaillée, sécurité, maintenance, ajout d'agents.
+
 ---
 
 ## ⚠️ Critical Development Notes

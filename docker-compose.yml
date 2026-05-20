@@ -55,7 +55,8 @@ services:
       # │ ✅ PRIVATE project  → keep this label                          │
       # │ ❌ PUBLIC project   → comment out or remove this label          │
       # └─────────────────────────────────────────────────────────────────┘
-      - "traefik.http.routers.${PROJECT_NAME}-front.middlewares=google-auth@docker"
+      # PUBLIC site — no Google Auth (ramp status for everyone)
+      # - "traefik.http.routers.${PROJECT_NAME}-front.middlewares=google-auth@docker"
 
   # ── Backend (FastAPI / Uvicorn) ────────────────────────────────────
   backend:
@@ -93,13 +94,8 @@ services:
       # │ ✅ PRIVATE project → keep these lines                          │
       # │ ❌ PUBLIC project  → comment out ALL lines below                │
       # └─────────────────────────────────────────────────────────────────┘
-      - "traefik.http.routers.${PROJECT_NAME}-back.middlewares=google-auth@docker"
-      # CORS preflight router — lets OPTIONS through without auth
-      - "traefik.http.routers.${PROJECT_NAME}-back-cors.rule=Host(`api.${PROJECT_NAME}.${DOMAIN_NAME}`) && Method(`OPTIONS`)"
-      - "traefik.http.routers.${PROJECT_NAME}-back-cors.entrypoints=websecure"
-      - "traefik.http.routers.${PROJECT_NAME}-back-cors.tls.certresolver=myresolver"
-      - "traefik.http.routers.${PROJECT_NAME}-back-cors.priority=200"
-      - "traefik.http.routers.${PROJECT_NAME}-back-cors.service=${PROJECT_NAME}-back"
+      # PUBLIC API — no Google Auth
+      # - "traefik.http.routers.${PROJECT_NAME}-back.middlewares=google-auth@docker"
 
   # ── Additional services (uncomment as needed) ───────────────────────────
   #
