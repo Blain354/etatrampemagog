@@ -63,6 +63,12 @@
   --color-warning: #b45309;
   --color-danger: #b91c1c;
 
+  /* Flow gauge wave colors */
+  --color-gauge-track: #f0f9ff;
+  --color-gauge-water: #38bdf8;
+  --color-gauge-water-deep: #0ea5e9;
+  --color-gauge-water-shallow: #7dd3fc;
+
   --shadow-sm: 0 4px 10px rgba(15, 23, 42, 0.06);
   --shadow-md: 0 10px 24px rgba(15, 23, 42, 0.1);
 
@@ -94,6 +100,12 @@
   --color-success: #22c55e;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
+
+  /* Flow gauge wave colors (dark mode) */
+  --color-gauge-track: #1e293b;
+  --color-gauge-water: #0ea5e9;
+  --color-gauge-water-deep: #0284c7;
+  --color-gauge-water-shallow: #38bdf8;
 
   --shadow-sm: 0 4px 10px rgba(2, 6, 23, 0.28);
   --shadow-md: 0 10px 24px rgba(2, 6, 23, 0.38);

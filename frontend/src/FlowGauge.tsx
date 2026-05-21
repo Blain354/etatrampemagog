@@ -9,8 +9,7 @@ const PADDING_TOP = 22
 const PADDING_BOTTOM = 42
 const BAR_TOP = 48
 const BAR_HEIGHT = GAUGE_HEIGHT - BAR_TOP - PADDING_BOTTOM
-const TRACK_FILL = '#f0f9ff'
-const WATER_FILL = '#38bdf8'
+const TRACK_FILL = 'var(--color-gauge-track)'
 
 interface FlowGaugeProps {
   riverFlow: string | null
@@ -19,6 +18,12 @@ interface FlowGaugeProps {
 function parseFlow(flow: string): number {
   const match = flow.match(/(\d+)/)
   return match ? parseInt(match[1], 10) : 0
+}
+
+function getLeftRoundedRectPath(x: number, y: number, w: number, h: number, r: number): string {
+  if (w <= 0) return ''
+  const actualR = Math.min(r, w)
+  return `M ${x + actualR},${y} L ${x + w},${y} L ${x + w},${y + h} L ${x + actualR},${y + h} Q ${x},${y + h} ${x},${y + h - actualR} V ${y + actualR} Q ${x},${y} ${x + actualR},${y} Z`
 }
 
 export default function FlowGauge({ riverFlow }: FlowGaugeProps) {
@@ -30,6 +35,15 @@ export default function FlowGauge({ riverFlow }: FlowGaugeProps) {
 
   const waterAreaWidth = GAUGE_WIDTH - PADDING_X * 2
   const waterWidth = (clampedFlow / MAX_FLOW) * waterAreaWidth
+
+  // Vitesse d'animation directement proportionnelle au débit.
+  // Plus le débit est élevé, plus les vagues bougent vite.
+  // À 70 m³/s (seuil), les vagues ont leur vitesse de référence.
+  const speedFactor = hasData ? flow! / 70 : 0
+  const durationBack = hasData ? 3.0 / speedFactor : 0
+  const durationMiddle = hasData ? 2.2 / speedFactor : 0
+  const durationFront = hasData ? 1.4 / speedFactor : 0
+  const durationStream = hasData ? 3.0 / speedFactor : 0
 
   const thresholdX = PADDING_X + (THRESHOLD / MAX_FLOW) * waterAreaWidth
   const tickBaseY = GAUGE_HEIGHT - PADDING_BOTTOM + 6
@@ -65,37 +79,70 @@ export default function FlowGauge({ riverFlow }: FlowGaugeProps) {
       >
         <defs>
           <clipPath id={clipId}>
-            <rect
-              x={PADDING_X}
-              y={BAR_TOP}
-              width={Math.max(waterWidth, 0)}
-              height={BAR_HEIGHT}
-              rx={14}
-            />
+            <path d={getLeftRoundedRectPath(PADDING_X, BAR_TOP, Math.max(waterWidth, 0), BAR_HEIGHT, 14)} />
           </clipPath>
         </defs>
 
-        <rect
-          x={PADDING_X}
-          y={BAR_TOP}
-          width={waterAreaWidth}
-          height={BAR_HEIGHT}
-          rx={14}
+        <path
+          d={getLeftRoundedRectPath(PADDING_X, BAR_TOP, waterAreaWidth, BAR_HEIGHT, 14)}
           fill={TRACK_FILL}
           stroke="var(--color-border)"
           strokeWidth="1.5"
         />
 
         {hasData && waterWidth > 0 ? (
-          <rect
-            x={PADDING_X}
-            y={BAR_TOP}
-            width={waterWidth}
-            height={BAR_HEIGHT}
-            rx={14}
-            fill={WATER_FILL}
-            clipPath={`url(#${clipId})`}
-          />
+          <g clipPath={`url(#${clipId})`}>
+            {/* Layer 1 (Back Wave) */}
+            <path
+              d="M -300,52 Q -225,47,-150,52 Q -75,57,0,52 Q 75,47,150,52 Q 225,57,300,52 Q 375,47,450,52 Q 525,57,600,52 Q 675,47,750,52 Q 825,57,900,52 V 166 H -300 Z"
+              fill="var(--color-gauge-water-shallow)"
+              opacity="0.45"
+              style={{
+                animation: hasData ? `wave-move-right-300 ${durationBack}s linear infinite` : 'none',
+              }}
+            />
+            {/* Layer 2 (Middle Wave) */}
+            <path
+              d="M -240,60 Q -180,54,-120,60 Q -60,66,0,60 Q 60,54,120,60 Q 180,66,240,60 Q 300,54,360,60 Q 420,66,480,60 Q 540,54,600,60 Q 660,66,720,60 V 166 H -240 Z"
+              fill="var(--color-gauge-water-deep)"
+              opacity="0.65"
+              style={{
+                animation: hasData ? `wave-move-right-240 ${durationMiddle}s linear infinite` : 'none',
+              }}
+            />
+            {/* Layer 3 (Front Wave) */}
+            <path
+              d="M -180,68 Q -135,61,-90,68 Q -45,75,0,68 Q 45,61,90,68 Q 135,75,180,68 Q 225,61,270,68 Q 315,75,360,68 Q 405,61,450,68 Q 495,75,540,68 V 166 H -180 Z"
+              fill="var(--color-gauge-water)"
+              style={{
+                animation: hasData ? `wave-move-right-180 ${durationFront}s linear infinite` : 'none',
+              }}
+            />
+            {/* Stream Flow Particles */}
+            {[
+              { id: 1, y: 82, w: 22, h: 2.5, delay: 0 },
+              { id: 2, y: 100, w: 16, h: 2, delay: -0.6 },
+              { id: 3, y: 118, w: 26, h: 2.5, delay: -1.2 },
+              { id: 4, y: 136, w: 18, h: 2, delay: -1.8 },
+              { id: 5, y: 148, w: 20, h: 2.5, delay: -2.4 },
+            ].map((p) => (
+              <rect
+                key={p.id}
+                x={0}
+                y={p.y}
+                width={p.w}
+                height={p.h}
+                rx={p.h / 2}
+                fill="rgba(255, 255, 255, 0.45)"
+                className="flow-stream-line"
+                style={{
+                  transformOrigin: 'left center',
+                  animation: (hasData && durationStream > 0) ? `stream-flow ${durationStream}s linear infinite` : 'none',
+                  animationDelay: (hasData && durationStream > 0) ? `${p.delay * durationStream}s` : 'none',
+                }}
+              />
+            ))}
+          </g>
         ) : null}
 
         <line

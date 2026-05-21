@@ -41,7 +41,12 @@ function App() {
     setErrorMessage(null)
 
     try {
-      const response = await apiFetch('/api/ramp-status')
+      const urlParams = new URLSearchParams(window.location.search)
+      const mockFlow = urlParams.get('mock_flow')
+      const endpoint = mockFlow
+        ? `/api/ramp-status?mock_flow=${encodeURIComponent(mockFlow)}`
+        : '/api/ramp-status'
+      const response = await apiFetch(endpoint)
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`)
       }

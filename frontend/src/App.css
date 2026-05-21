@@ -243,6 +243,51 @@
   overflow: visible;
 }
 
+/* Wave Animations */
+@keyframes wave-move-right-180 {
+  from {
+    transform: translate3d(-180px, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes wave-move-right-240 {
+  from {
+    transform: translate3d(-240px, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes wave-move-right-300 {
+  from {
+    transform: translate3d(-300px, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes stream-flow {
+  0% {
+    transform: translate3d(60px, 0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.7;
+  }
+  85% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate3d(540px, 0, 0);
+    opacity: 0;
+  }
+}
+
 .flow-status {
   display: flex;
   align-items: center;
@@ -358,7 +403,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .spin {
-    animation: none;
+  .spin,
+  .flow-svg path,
+  .flow-stream-line {
+    animation: none !important;
   }
 }

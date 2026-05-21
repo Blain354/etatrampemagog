@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from services.ramp_status import RampStatusResponse, fetch_ramp_status
+from services.ramp_status import RampStatusResponse, RampStatusValue, fetch_ramp_status
 
 
 class Settings(BaseSettings):
@@ -52,9 +52,19 @@ def health():
 
 
 @app.get("/api/ramp-status", response_model=RampStatusResponse)
-async def ramp_status() -> RampStatusResponse:
+async def ramp_status(mock_flow: int | None = None) -> RampStatusResponse:
     try:
-        return await fetch_ramp_status()
+        res = await fetch_ramp_status()
+        if mock_flow is not None:
+            is_closed = mock_flow > 70
+            res = res.model_copy(update={
+                "river_flow": f"{mock_flow} m3/s",
+                "status": RampStatusValue.CLOSED if is_closed else RampStatusValue.OPEN,
+                "label": "Fermée" if is_closed else "Ouverte",
+                "ramp_info": f"Navigation interdite - Débit trop élevé (>70 m3/s) [MOCK: {mock_flow} m3/s]" if is_closed else f"La rampe est accessible. [MOCK: {mock_flow} m3/s]",
+                "reopening_date_display": "Date fictive (Débit bas requis)" if is_closed else None
+            })
+        return res
     except httpx.HTTPError as exc:
         raise HTTPException(
             status_code=502,
