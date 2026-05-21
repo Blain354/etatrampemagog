@@ -43,6 +43,12 @@
   line-height: 1.2;
 }
 
+.subtitle {
+  margin: var(--space-1) 0 0;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
 .refresh-btn,
 .retry-btn {
   display: inline-flex;
@@ -195,36 +201,112 @@
   color: var(--color-text-muted);
 }
 
-.river-flow-block {
-  margin-top: var(--space-4);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--color-info) 10%, var(--color-surface));
-  border: 1px solid color-mix(in srgb, var(--color-info) 30%, transparent);
+/* ── Flow Gauge (jauge de débit) ─── */
+
+.flow-gauge {
+  margin-top: var(--space-6);
+  padding: var(--space-6) var(--space-4) var(--space-2);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  text-align: center;
 }
 
-.river-flow-label {
-  display: block;
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-muted);
+.flow-gauge-value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
 }
 
-.river-flow-value {
-  display: block;
-  margin-top: var(--space-1);
-  font-size: 1.25rem;
-  font-weight: 600;
+.flow-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
   color: var(--color-text);
 }
 
-.river-flow-value.flow-high {
+.flow-unit {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.flow-svg {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+}
+
+.flow-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.flow-status.safe {
+  background: color-mix(in srgb, var(--color-success) 10%, var(--color-surface));
+  color: var(--color-success);
+}
+
+.flow-status.danger {
+  background: color-mix(in srgb, var(--color-danger) 10%, var(--color-surface));
   color: var(--color-danger);
 }
 
-.river-flow-value.flow-normal {
-  color: var(--color-success);
+.flow-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.flow-status.safe .flow-status-dot {
+  background: var(--color-success);
+}
+
+.flow-status.danger .flow-status-dot {
+  background: var(--color-danger);
+  animation: pulse-dot 2s infinite;
+}
+
+.flow-status.nodata .flow-status-dot {
+  background: var(--color-warning);
+}
+
+.flow-status.nodata {
+  background: color-mix(in srgb, var(--color-warning) 10%, var(--color-surface));
+  color: var(--color-warning);
+}
+
+.flow-no-data {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.wave-move {
+  animation: wave-drift 3s linear infinite;
+}
+
+@keyframes wave-drift {
+  from { background-position-x: 0; }
+  to { background-position-x: 60px; }
 }
 
 .ramp-info {

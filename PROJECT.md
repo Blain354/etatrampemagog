@@ -28,7 +28,7 @@ Plaisanciers, résidents et visiteurs du lac Memphrémagog qui utilisent la ramp
 
 - Stack template : React 19 + Vite + FastAPI + Docker + Traefik
 - Site public (sans Google Auth)
-- Domaine : `rampe-magog-etat.blain-projects.ca`
+- Domaine : `etatrampemagog.blain-projects.ca`
 - Source : https://www.ville.magog.qc.ca/informations-services/avis-important/
 
 ## Success Metrics
@@ -39,5 +39,5 @@ Plaisanciers, résidents et visiteurs du lac Memphrémagog qui utilisent la ramp
 
 ## Notes & References
 
-- Déploiement OpenClaw avec `PROJECT_NAME=rampe-magog-etat`
-- CORS : `https://rampe-magog-etat.blain-projects.ca`
+- Déploiement OpenClaw avec `PROJECT_NAME=etatrampemagog`
+- CORS : `https://etatrampemagog.blain-projects.ca`

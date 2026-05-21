@@ -16,7 +16,7 @@ MAGOG_AVIS_URL: Final[str] = (
     "https://www.ville.magog.qc.ca/informations-services/avis-important/"
 )
 CACHE_TTL_SECONDS: Final[int] = 300
-USER_AGENT: Final[str] = "RampeMagogEtat/1.0 (+https://rampe-magog-etat.blain-projects.ca)"
+USER_AGENT: Final[str] = "RampeMagogEtat/1.0 (+https://etatrampemagog.blain-projects.ca)"
 
 FRENCH_MONTHS: Final[dict[str, int]] = {
     "janvier": 1,

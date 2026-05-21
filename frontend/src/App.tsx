@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { AlertCircle, Anchor, CheckCircle2, Loader2, RefreshCw, XCircle } from 'lucide-react'
+import { AlertCircle, CheckCircle2, Loader2, RefreshCw, Ship, XCircle } from 'lucide-react'
 import { apiFetch } from './api'
+import FlowGauge from './FlowGauge'
 import type { RampStatus, RampStatusResponse } from './types/ramp'
 import './App.css'
 
@@ -82,9 +83,10 @@ function App() {
     <div className="app-shell">
       <header className="site-header">
         <div className="brand-row">
-          <Anchor className="brand-icon" aria-hidden="true" />
+          <Ship className="brand-icon" aria-hidden="true" />
           <div>
             <h1 className="title">Rampe de mise à l&apos;eau</h1>
+            <p className="subtitle">Rampe de la capitainerie — Magog</p>
           </div>
         </div>
         <button
@@ -144,21 +146,14 @@ function App() {
               </div>
             )}
 
-            {rampStatus?.ramp_info && (
+            {rampStatus?.ramp_info && status !== 'open' && (
               <p className="ramp-info">
                 {rampStatus.ramp_info}
               </p>
             )}
 
-            {/* River flow section - simplified */}
-            {rampStatus?.river_flow && (
-              <div className="river-flow-block">
-                <span className="river-flow-label">Débit de la rivière</span>
-                <span className="river-flow-value">
-                  {rampStatus.river_flow}
-                </span>
-              </div>
-            )}
+            {/* Flow gauge visual — always show, even without data */}
+            <FlowGauge riverFlow={rampStatus?.river_flow ?? null} />
 
             {status === 'closed' && !rampStatus.reopening_date_display && (
               <p className="reopen-unknown">
@@ -191,7 +186,7 @@ function App() {
 
       <footer className="site-footer">
         <span>Données : Ville de Magog — avis importants</span>
-        <span>rampe-magog-etat.blain-projects.ca</span>
+        <span>etatrampemagog.blain-projects.ca</span>
       </footer>
     </div>
   )
