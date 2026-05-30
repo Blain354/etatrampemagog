@@ -1,0 +1,20 @@
+---
+description: "Docker & Traefik conventions (managed by blain-agent-kit)"
+globs: "**/{Dockerfile,docker-compose*.yml,*.ts,*.tsx,*.py}"
+alwaysApply: false
+---
+> ⚠️ Managé par blain-agent-kit — édite dans le repo blain-agent-kit, pas ici.
+
+# Docker & Traefik
+
+## Réseau
+- Tous les services tournent sur `web_network`.
+- JAMAIS exposer de ports (`ports:`). Traefik route via les labels.
+- Service privé = label `google-auth@docker`.
+
+## Frontend
+- Le frontend utilise `apiFetch()` — JAMAIS `fetch()` nu.
+- Pas de `localhost` en production (utilise les noms de service / domaines).
+
+## Persistance
+- Utilise des volumes pour toute donnée à persister.

@@ -1,0 +1,23 @@
+---
+description: "blain-projects design system & mobile-first UI (managed by blain-agent-kit)"
+globs: "frontend/src/**/*.{ts,tsx,css}"
+alwaysApply: true
+---
+> ⚠️ Managé par blain-agent-kit — édite dans le repo blain-agent-kit, pas ici.
+
+# Design system @blain-projects/ui
+
+## Source unique
+- Importe TOUTE l'UI depuis `@blain-projects/ui`.
+- INTERDIT de créer des primitives UI maison (Button, Card, Panel, Badge, Input…).
+- INTERDIT d'utiliser du hex brut ou de redéfinir le thème.
+- Si un composant manque → ajoute-le AU PACKAGE `@blain-projects/ui`, jamais localement.
+
+## Mobile-first & minimal
+- Sur mobile, on montre l'ESSENTIEL : action principale + contenu.
+- On CACHE menus / settings / filtres secondaires via `MobileOnly` / `DesktopOnly`,
+  ou derrière `Drawer` + `MenuButton`.
+- Tap targets ≥ 44px.
+- Pas d'interaction hover-only (inaccessible au tactile).
+- Pas de tableaux denses / multi-colonnes sur mobile.
+- Teste systématiquement le rendu à **375px** de large.

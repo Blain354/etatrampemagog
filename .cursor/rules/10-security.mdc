@@ -1,0 +1,23 @@
+---
+description: "Security & approval rules (managed by blain-agent-kit)"
+globs: "**/*"
+alwaysApply: true
+---
+> ⚠️ Managé par blain-agent-kit — édite dans le repo blain-agent-kit, pas ici.
+
+# Règles de sécurité
+
+## Secrets
+- JAMAIS de secret, token, clé ou mot de passe en clair, ni commité dans le repo.
+- Toujours via variables d'environnement (`.env` non commité, `process.env`).
+
+## Approbation `/approve` (obligatoire AVANT)
+Un `/approve` formel est requis AVANT tout :
+- changement de sécurité ou d'infrastructure ;
+- usage de `sudo` / root ;
+- ouverture d'un nouveau port ;
+- ajout d'un nouveau credential.
+
+## Accès API & données
+- Inventory API : uniquement via `curl` + `Authorization: Bearer …`. JAMAIS via `web_fetch`.
+- Règle bancaire : **SimpleFin est la seule source de vérité**. N'importe JAMAIS de CSV bancaire.

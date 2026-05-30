@@ -9,13 +9,27 @@
 
 ## Local startup
 
-- Frontend: `cd frontend && npm install && npm run dev` (Vite server).
-- Backend: `cd backend && pip install -r requirements.txt && python main.py`.
+- Frontend: `cd frontend && npm install && npm run dev` (Vite server on `:5173`).
+- Backend (two equivalent options):
+  - `cd backend && pip install -r requirements.txt && python main.py`
+    → binds `:5000` (matches Docker prod port). Used in the `if __name__ == "__main__"` block.
+  - `cd backend && uvicorn main:app --reload`
+    → binds the uvicorn default `:8000`. Convenient for hot reload during dev.
+
+> ⚠️ **The ASGI module is `main:app`** (the file is `main.py`). Never use `app:app` —
+> the template Dockerfile historically had this bug and made `template-back` crash-loop
+> for 11 days before being caught. The Dockerfile is now fixed; do not regress it.
 
 ## Integration conventions
 
 - From browser clients, use the public API URL in production (for example: `https://api.<project>.blain-projects.ca/...`).
-- Between internal containers/services, use `http://backend:5000/...`.
+- Between internal containers/services on `web_network`, use `http://<container-name>:<port>/...`.
+  For the backend of THIS template, the container is `${PROJECT_NAME}-back` listening on `5000`.
+  Generic alias `http://backend:5000` only resolves if the compose service is named `backend`
+  AND containers share the same compose project network — for cross-project calls always use
+  the explicit container name.
+- To reach an OpenClaw agent, use `http://openclaw-bridge:8000/api/internal/v1/agents/{id}/send`.
+  See `OPENCLAW.md` and `openclaw-agents-catalog.md`.
 
 ## Important constraints
 

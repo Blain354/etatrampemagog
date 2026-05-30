@@ -4,6 +4,12 @@ This directory centralizes technical context and working rules for AI agents bui
 
 ## Contents
 
+### Spec-Driven Development (session start — MANDATORY)
+- `.specify/constitution.md`: project governing principles — agents VALIDATE, not just read.
+- `.specify/templates/spec-template.md`: feature specification blueprint.
+- `.specify/templates/checklist-template.md`: per-feature validation checklist.
+- `scripts/validate-deploy-ready.sh`: automated network/build pre-deployment checks.
+
 ### Methodology (use these actively)
 - `domain-language.md`: shared project glossary (CONTEXT.md) — eliminates agent reinventing terms every session.
 - `grill-session.md`: alignment interview before coding — the #1 defense against misunderstood intent.
@@ -12,13 +18,16 @@ This directory centralizes technical context and working rules for AI agents bui
 
 ### Process & standards
 - `generic-agentic-rules.md`: generic agentic engineering rules.
-- `onboarding.md`: project onboarding flow — triggered automatically for fresh template projects.
+- `onboarding.md`: project onboarding flow — gated by the `ONBOARDING.md` sentinel at the repo root. Plan → Questions → Fill → `scripts/finalize-onboarding.sh` (which deletes the sentinel). Mandatory first-run for any fresh project.
 - `project-context.md`: project context and core conventions.
 - `development-workflow.md`: recommended implementation workflow.
 - `skill-authoring-ide-agnostic.md`: skill-authoring standard + targeted `.cursor/.agent` rule strategy.
 
 ### Technical reference
 - `api-endpoints.md`: existing backend endpoints and API conventions.
+- `openclaw-bridge.md`: intégration OpenClaw Agent Bridge — comment connecter ton backend aux agents IA.
+- `openclaw-agents-catalog.md`: liste des 13 agents OpenClaw disponibles avec leurs `id` et spécialités.
+- `ecosystem-services.md`: services partagés sur `web_network` (n8n, openclaw-mcp, nextcloud, etc.).
 - `deployment-architecture.md`: Docker/Traefik architecture and deployment constraints.
 - `security-modes.md`: security options (Google Auth, network protection, dev vs prod).
 - `deployment-modes.md`: simple deployment mode contract (`secure` vs `public`).

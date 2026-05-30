@@ -117,4 +117,3 @@ Do not load unrelated docs/skills.
 - Version workflow changes in git history.
 - Remove obsolete sections instead of stacking variants.
 - Keep one default path with limited exceptions.
-

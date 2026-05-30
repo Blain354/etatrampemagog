@@ -4,11 +4,22 @@ You are an expert autonomous software engineering agent. Your target environment
 
 <onboarding_mandatory>
   <directive priority="HIGHEST">
-    At the start of EVERY session, read `PROJECT.md`.
-    If it contains `TODO: DEFINE YOUR PROJECT` or `<!-- MARKER: ONBOARDING_PENDING -->`:
-    → STOP. Trigger the Project Onboarding Flow (see `AI skills/onboarding.md`).
-    → Complete the onboarding questionnaire BEFORE any other task.
-    → The original user request MUST be preserved and executed after onboarding.
+    At session start, check whether `ONBOARDING.md` exists at the repo root.
+    If YES → STOP. Read `ONBOARDING.md`, then read `AI skills/onboarding.md`.
+    Execute the full procedure in order: Phase 0 (acknowledge) → Phase 1 (PLAN, get user approval) →
+    Phase 2 (analysis) → Phase 3 (questions) → Phase 4 (fill) → Phase 5 (run
+    `scripts/finalize-onboarding.sh` which DELETES `ONBOARDING.md`) →
+    Phase 6 (run `scripts/validate-deploy-ready.sh`) → Phase 7 (resume the user's request).
+    Skipping any phase is forbidden.
+  </directive>
+  <directive priority="HIGHEST">
+    Secondary safety net: if `ONBOARDING.md` is absent but `PROJECT.md` still
+    contains `TODO: DEFINE YOUR PROJECT` or `<!-- MARKER: ONBOARDING_PENDING -->`,
+    re-enter the onboarding flow (someone removed the sentinel without finalizing).
+  </directive>
+  <directive priority="HIGHEST">
+    The original user request MUST be preserved verbatim in Phase 0 and
+    restated + executed during Phase 7.
   </directive>
 </onboarding_mandatory>
 
@@ -24,8 +35,21 @@ You are an expert autonomous software engineering agent. Your target environment
   <directive>Caveman mode: when the user says "caveman mode", "talk like caveman", "less tokens", or "be brief", immediately switch to ultra-compressed communication. Drop articles, filler, pleasantries. Keep technical accuracy. Resume normal mode only when asked.</directive>
 </core_directives>
 
+<spec_driven_development mandatory="true">
+  <directive>At session start, read `.specify/constitution.md`. These are NOT suggestions — they are project law.</directive>
+  <directive>Before calling any task "done", validate ALL applicable constitution rules.</directive>
+  <directive>For every feature affecting >5 files or >1 module: create a spec at `specs/NNN-feature-name/spec.md` using the template at `.specify/templates/spec-template.md`.</directive>
+  <directive>After implementation, run `./scripts/validate-deploy-ready.sh` (set PROJECT_NAME first). Fix any failures before declaring done.</directive>
+  <directive>Network rules (constitution § Network Rules) are the highest-priority validation. Violations cause production deployment failures.</directive>
+  <directive>Specs persist in the repo. They are the contract between planning and implementation. Other agents (or future you) can read them to understand WHY decisions were made.</directive>
+</spec_driven_development>
+
 <execution_loop>
-  <step_1>Generate a 'Task List' and an 'Implementation Plan'.</step_1>
-  <step_2>Execute the tasks sequentially with a short technical justification before each action.</step_2>
-  <step_3>Validate proper functionality (API ping, Vite build, checking Docker logs).</step_3>
+  <step_minus_1>Read `AGENTS.md` and check for `ONBOARDING.md` sentinel. If present, hand control to `AI skills/onboarding.md`.</step_minus_1>
+  <step_0>Read `.specify/constitution.md` and `CONTEXT.md` (if exists). Internalize project rules.</step_0>
+  <step_1>For features >1 module: write spec at `specs/NNN-feature-name/spec.md` using template.</step_1>
+  <step_2>Generate a 'Task List' and an 'Implementation Plan' from the spec.</step_2>
+  <step_3>Execute tasks sequentially (TDD vertical slices). Validate constitution rules after each task.</step_3>
+  <step_4>Run `PROJECT_NAME=<name> ./scripts/validate-deploy-ready.sh`.</step_4>
+  <step_5>Fix failures, re-validate, then declare done.</step_5>
 </execution_loop>

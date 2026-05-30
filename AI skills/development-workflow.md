@@ -36,8 +36,12 @@ npm run lint     # ESLint check
 ### Backend
 ```bash
 cd backend
-uvicorn app:app --reload
-# Check: GET http://localhost:8000/api/health
+# Module is `main` (file: main.py), not `app`.
+# Default uvicorn dev port is 8000; the Docker container uses 5000.
+uvicorn main:app --reload
+# Check: GET http://localhost:8000/api/health   (local dev with uvicorn)
+# In Docker: GET http://localhost:5000/api/health from inside the container,
+#            or https://api.<project>.blain-projects.ca/api/health from outside.
 ```
 
 ### Full Stack (Docker)

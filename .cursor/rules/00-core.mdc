@@ -1,0 +1,22 @@
+---
+description: "Core engineering rules (managed by blain-agent-kit)"
+globs: "**/*"
+alwaysApply: true
+---
+> ⚠️ Managé par blain-agent-kit — édite dans le repo blain-agent-kit, pas ici.
+
+# Règles d'ingénierie fondamentales
+
+## TDD obligatoire
+- Écris ET roule un test AVANT de dire "done". Aucune feature n'est terminée sans test qui passe.
+- Couvre les edge-cases (entrée vide/null, limites, erreurs, idempotence quand pertinent).
+- Zéro régression sans test : tout bug corrigé est verrouillé par un test qui échouait avant le fix.
+
+## Code modulaire
+- Single-responsibility : chaque fonction/module fait une seule chose.
+- Composants séparés et réutilisables ; pas de méga-fichiers fourre-tout.
+- Un test par nouvelle feature, au minimum.
+
+## Process
+- Commits atomiques, directs sur `main`. PAS de Pull Request.
+- Les docs suivent le code : si le comportement change, la doc change dans le même commit.
